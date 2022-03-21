@@ -1,0 +1,794 @@
+\documentclass[12pt,twoside]{report}
+\usepackage[italian]{babel} 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{placeins}
+\usepackage{mathbbol}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage[a4paper, top=2.6cm, left=3.0cm, right=3.2cm, bottom=3cm, headsep=32pt]{geometry}
+\usepackage{csquotes}
+%\usepackage{makecell}
+\usepackage{graphicx}
+\usepackage{float}
+%\usepackage{mathpazo}
+\usepackage{color}
+%\usepackage{multirow}
+\usepackage{lmodern}
+%\usepackage{caption}
+\usepackage{minted}
+\usepackage[
+backend=biber,
+style=numeric,
+sorting=none
+]{biblatex}
+\addbibresource{ref.bib}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE, RO]{\thepage}
+\fancyhead[RE, LO]{\normalsize\color{black}\leftmark}
+
+\titleformat{\chapter}[display]
+{\normalfont\bfseries}{}{0pt}{\LARGE}
+\setlength{\parindent}{0pt}
+
+
+\begin{document}
+	\include{frontespizio}
+	\newpage\
+	\pagestyle{empty}
+	\include{dedica}
+	\pagestyle{fancy}
+	\fancyhf{}
+	\fancyhead[LE, RO]{\thepage}
+	\fancyhead[RE, LO]{\normalsize\color{black}\leftmark}
+	\tableofcontents
+	\chapter{Abstract} %puoi integrarlo con l'introduzione
+	Il concetto di rete temporale, o \textit{temporal network} consiste nell'estendere la teoria delle reti includendo la dimensione del tempo, ovvero l'informazioni relative al quando nodi ed archi appaiono e scompaiono dalla rete. Utilizzando il tempo come ulteriore grado di libertà si è in grado di modellare con più accutaratezza quei fenomeni che presentano un carattere diffusivo (e.g. fenomeni epidemici). Maggiore precisione nei modelli predittivi ed un ulteriore dimensione portano ad da una maggiore complessità dal punto di vista matematico ed interpretativo. Questo lavoro di tesi nasce con l'intento di esplorare l'analisi di dati sperimentali ottenuti tramire il progetto HumanToHuman, il cui focus è quello di registrare spazialmente e temporalemente le interazioni dal vivo di soggetti. Grazie ad un innovativo approccio di analisi dati ci poniamo lo scopo di aggiungere interpretabilità ai dati sperimentali ottenuti al fine di poter informare modelli predittivi in ambito epidemiologico.
+	
+	\chapter{Introduzione}
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[scale=0.6]{img/piramide.png}
+	    \caption{Caption}
+	    \label{fig:my_label}
+	\end{figure}
+	\FloatBarrier
+	Alla base di questo studio vi è senza dubbio un personale interesse per lo studio delle reti. Durante il mio percorso di laurea magistrale diverse volte mi sono trovato davanti a concetti che ben si sono prestati ad un'astrazione mediante teoria delle reti. Si pensi per esempio alle reti biologiche in bioinformatica, piuttosto che alle reti di contatto in epidemiologia fino ad arrivare alle reti logistiche. Tutto questo senza considerare gli esempi più noti, come il world wide web. 
+	Topologicamente parlando, i concetti più basilari della teoria delle reti provengono dall'ambito matematico e sono principalmente due: nodi e rami.
+	\section{Il problema dei sette ponti di Königsberg}
+	Queste entità verranno usate per la prima volta da Eulero nell'ambito della risoluzione del primo problema noto in letteratura che riguarda una soluzione modellata attraverso la teoria delle reti: il problema dei 7 ponti di Königsberg del 1736 \cite{https://doi.org/10.1002/jgt.3190100305}.
+	\FloatBarrier
+	Fu la prima volta nella storia che venne usato direttamente il concetto di topologia di una rete per rispondere ad una specifica domanda: sarebbe stato possibile viaggiare per la città attraversando ogni ponte una sola volta ?
+	Eulero modellò il sistema indicando con dei punti (nodi) le due sponde del fiume e le due isole. Le sette linee invece costituivano invece i ponti (gli archi) che legavano i vari punti della città.
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.8\linewidth]{img/7Ponti.png}
+	    \caption{Caption}
+	    \label{fig:my_label}
+	\end{figure}
+	Da questo modello fu dedotto un concetto molto importante: per giustificare la presenza di un vertice dispari (ovvero un vertice che è collegato con un numero dispari di altri nodi) in un percorso euleriano, è necessario per forza di cose iniziare o concludere in quel nodo il percorso: dato che un percorso è costituito esattamente da un solo inizio e da una sola fine, ciò ammette la presenza di al più due vertici dispari. Applicando questa idea al problema in questione, si può concludere che non è possibile soddisfare la richiesta fatta inizialmente.\clearpage
+	\FloatBarrier
+	\section{I lavori successivi di Barabási e Albert}
+	
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.8\linewidth]{img/dd.png}
+	    \caption{Esempio di scale-free network}
+	    \label{fig:my_label}
+	\end{figure}
+	
+	Successivamente, Barabási e Albert portano nuova linfa ai concetti teorici della moderna teoria delle reti. Partiamo da quello di scale-free network \cite{scalinginrandomnetworks}, ovvero una rete ad invarianza di scala. Questo nuovo termine verrà quindi coniato ad-hoc per indicare un tipo di rete la cui degree distribution segue una legge di potenza, nello specifico un'esponenziale negativa. Ricordiamo che la degree distribution è una distribuzione di probabilità $P(k)$ che indica, per ogni valore di $k$, il numero di nodi aventi grado esattamente uguale a $k$. La legge in questione è la seguente:
+	\begin{equation}
+	    P(k) \sim k^{-\gamma}
+	\end{equation}
+	dove solitamente $2<\gamma<3$ e $k$ è il numero di nodi di grado $k$.
+	Ne consegue che un nodo appena entrato nella rete avrà una probabilità molto alta di collegarsi a quei nodi che hanno un gran numero di connessioni. Questo meccanismo prende il nome di \textit{preferential attachment}, anche noto come il fenomeno \textit{The rich get richer}.
+	Ulteriori precisazioni verranno affrontate nelle sezioni successive dove si discuteranno le principali misure nei grafi.
+	Un secondo lavoro molto importante è quello che descrive più in dettaglio la topologia del World Wide Web\cite{wwwpowerlaw}. Da qui in poi si è scoperto che molte altre reti condividono questa topologia:
+	\begin{itemize}
+	    \item Le reti metaboliche
+	    \item Le reti sociali
+	    \item La rete Internet
+	    \item I domini magnetici in un materiale antiferromagnetico
+	    \item ...
+	\end{itemize}\clearpage
+	
+	\subsection{Modello BA}
+	
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=1\linewidth]{img/2560px-Barabasi_albert_graph.svg.png}
+	    \caption{Modello Barabàsi-Albert}
+	    \label{fig:my_label}
+	\end{figure}
+	\FloatBarrier
+	Il modello BA è un modello matematico minimale sviluppato da Barabàsi e Albert per evidenziare come i concetti di crescita e di preferential attachment in una rete siano legati strettamente quando si parla di reti scale-free. Viene definito come segue:\vspace{2em}
+	
+    \textbf{Parametri}: Due interi, $m$ ed $m_0$, con $m < m_0$.\\
+    
+    \textbf{Inizializzazione}: Un grafo con $m_0$ vertici.\\
+    
+    \textbf{Sviluppo}: Ad ogni step, un vertice nuovo viene aggiunto e viene collegato ad altri $m$ vertici con probabilità proporzionale al degree di ognuno di questi $m$ vertici. In altre parole, la probabilità del nodo $j$ di essere collegato al nodo $i$ è $\frac{k_i}{2m_t}$, dove $k_i$ è il grado del nodo $k$, ed $m_t$ è il numero di archi del grafo al tempo $t$.\\
+    
+    \textbf{Conclusione} (a seguito di dimostrazione matematica qui omessa per semplicità): Il modello BA segue una legge di potenza (power law) di formula:
+    
+    \begin{equation}
+        Degree \ Distribution_{BA} = \frac{2m^2}{k^3}
+    \end{equation}\vspace{0.5em}
+    
+    Esiste poi una variante del modello che sfrutta una probabilità $p$ per scegliere il link in modo randomico, e di conseguenza solo una probabilità $1-p$ per scegliere in base al degree, si è fatto finora. Il fenomeno si chiama in gergo \textbf{preferential attachment}.
+    
+    \subsection{Implicazioni pratiche}
+    
+    Il lavoro di Barabàsi e Albert è importante oltre ai fini più teorici e complessi delle analisi topologiche, anche per le implicazioni più concrete che questi principi hanno nella progettazione di infrastrutture reali.
+    Si è visto infatti che una rete di tipo scale-free garantisce una robustezza notevole ai guasti randomici (random failures). Questo avviene in quanto c'è un'alta probabilità che il nodo difettoso non sia un hub. D'altra parte, questo tipo di rete risulta molto vulnerabili ad attacchi mirati, come mostrato da Rosato et al.\cite{Rosato} nel case study della rete elettrica italiana correlata alla rete informatica del GARR.
+    
+    \section{Karate Club}
+    
+    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.5\linewidth]{img/ZacharysKC.png}
+	    \caption{Relazioni sociali nel Karate Club}
+	    \label{fig:my_label}
+	\end{figure}
+	\FloatBarrier
+    
+    Un altro fondamentale caposaldo nella teoria delle reti è l'analisi del cosiddetto \textit{Zachary's Karate Club}\cite{zachary1977information}. Il grafo di base modella le relazioni sociali di un club di Karate ad opera di Wayne W. Zachary. La rete cattura per l'appunto i 34 membri di un club di karate, documentando i legami tra coppie di membri che hanno interagito al di fuori del club. Durante lo studio a seguito di un conflitto tra l'amministratore "John A" e l'istruttore "Mr. Hi" (pseudonimi), si è assistito alla divisione in due sottoinsiemi. La metà dei membri ha formato un nuovo club attorno a Mr. Hi; i membri dell'altra parte trovarono un nuovo istruttore o abbandonarono il karate. Sulla base dei dati raccolti, Zachary ha correttamente assegnato tutti i membri del club tranne uno ai gruppi a cui si sono effettivamente uniti dopo la divisione. Questo aspetto è interessante, dato che per quanto sopra esposto, una rete costituita da questi due nuovi hub principali è candidata ad essere scale-free. Osservando la degree distribution infatti, questa supposizione viene confermata:
+    
+    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.7\linewidth]{img/degreezach.png}
+	    \caption{Degree distribution del Karate Club}
+	    \label{fig:my_label}
+	\end{figure}
+	\FloatBarrier
+	
+	\section{Verso un nuovo grado di libertà}
+	Parlando più in generale, se vogliamo dare un senso diverso a sistemi complessi mediante la mole di dati che essi hanno alle spalle ci servono delle tecniche semplificative. Un primo step è quello di rappresentare il sistema di riferimento come una rete che intrinsecamente conserva solo l'informazione su quali nodi sono collegati agli altri. Per fare un esempio, se l'obiettivo è studiare il web, nel costruire una rete di collegamenti avremo inevitabilmente perdita di informazione (contenuti, autori, tempi di creazione...). Il secondo passo è quello di applicare dei framework già consolidati da tempo per trovare informazioni interessanti per l'osservatore.
+	Ma è indubbio che mediante l'introduzione di un grado di libertà aggiuntivo come può essere il tempo, le possibilità d'analisi si ampliano notevolmente.
+	Questo accade in quanto intrinsecamente molti fenomeni astraibili come reti sono caratterizzati da eventi distribuiti nel tempo. Si possono fare diversi esempi in tal senso:
+	\begin{enumerate}
+	    \item Nelle reti metaboliche, ogni link corrisponde ad una reazione chimica che avviene in un certo quanto di tempo ($A+B = C, \Delta T$)
+	    \item Nelle reti proprie dei social network un link può corrispondere ad una relazione di amicizia. Tuttavia è facile notare come questo tipo di relazione non sia immutabile nel tempo, per cui può capitare che un individuo in due tempi diversi, $t_1$ e $t_2$, sia collegato con due sottoinsiemi di nodi diversi pur facendo parte della stessa rete.
+	    \item In epidemiologia delle reti sociali, la forma è un aspetto fondamentale per inferire la capacità di diffusione di un patogeno all'interno di una comunità di persone. Tuttavia anche in questo caso è intuitivo modellare questo tipo di fenomeno mediante una rete di contatti che cambia nel tempo, ovvero in base alle interazioni umane del quotidiano di ciascuno di noi. 
+	\end{enumerate}
+	Da qui in poi le possibilità di utilizzo delle reti temporali diventano davvero numerose grazie all'interconnessione con diversi campi della scienza, spesso interdisciplinari. Li et Al.\cite{doi:10.1126/science.aai7488} hanno dimostrato come, rispetto alle controparti statiche, le reti temporali richiedono meno energia per essere controllate e garantiscono un livello di flessibilità maggiorato. Nella prossima sezione andremo brevemente a fare una panoramica sulla notazione utilizzata per descrivere sistemi sia statici sia dinamici, al fine di stabilire le caratteristiche comuni e quelle distintive.
+	\vskip 20pt
+	\textit{La tesi è articolata in cinque capitoli fondamentali più due conclusivi. Nei capitoli 3, 4 e 5, andremo a costruire le fondamenta di quello che sarà poi il nostro prototipo di blockchain, attraverso una trattazione per sommi capi della teoria alla base di questa tecnologia. Andremo quindi a studiare elementi di Crittografia, Teoria dei Giochi ed Informatica che faranno da infarinatura per i concetti più concreti esposti nel capitolo 6, dove forniremo un'implementazione, seppur basilare, di blockchain. Il capitolo 7 sarà il vero cuore di questo lavoro, ovvero l'analisi completa del caso di studio scelto e quindi la blockchain di prima generazione alla base del sistema Bitcoin. Parleremo di sicurezza, performance e punti di rottura in generale, e finiremo la trattazione incontrando una similitudine davvero inaspettata con la medicina. Infine i capitoli 8 e 9 concluderanno il discorso fornendo importanti elementi per futuri approfondimenti, nonchè i codici sorgenti utilizzati all'interno del progetto.}
+	
+	\chapter{Teoria delle Reti}
+	\section{Reti Statiche}
+	\vskip 20pt
+	\begin{figure}[htb]
+		\centering
+		\includegraphics[width=0.4\linewidth]{img/networkEx.png}
+		\caption{Un esempio di rete non diretta e non pesata}\label{fig:1}
+	\end{figure}
+	\vskip 20pt
+	Una rete statica non è altro che un sistema costituito da nodi e connesso da archi. Gli archi (o link) possono essere di vari tipi, diretti, non diretti, pesati o non pesati. In linguaggio matematico una rete statica è vista come un grafo:
+	
+	\begin{center}
+	    \large$G = (V, E)$ 
+	\end{center}
+	
+	Dove in questo caso V rappresenta l'insieme dei nodi ed E quello degli archi.
+	Una rete può essere rappresentata mediante una matrice NxN che prende il nome di matrice di adiacenza. Le entry di questa matrice sono date dalla seguente regola:
+	
+	\begin{equation}
+	A_{ij} = \left\{\begin{array}{rcl}
+	{1} & \mbox{se il nodo $v_i$ è adiacente al nodo $v_j$}
+	\\ {0} & \mbox{altrimenti} 
+	\end{array}\right.
+	\end{equation}\vskip 10pt
+	
+	A titolo esemplificativo, si riporta la matrice di adiacenza della rete di figura 3.1
+	
+	\[
+      \begin{pmatrix} 0 & 0 & 1 & 1 & 0 \\
+             0 & 0 & 1 & 0 & 0 \\
+             0 & 0 & 0 & 0 & 1 \\
+             1 & 0 & 0 & 0 & 0 \\
+             0 & 0 & 1 & 0 & 0  \end{pmatrix}
+\]\vskip 10pt
+	
+Una matrice di adiacenza è una struttura molto utile per lo svolgimento di analisi strutturali che coinvolgono gli strumenti dell'algebra lineare. Un esempio è l'analisi spettrale che inizia mediante il calcolo di autovettori ed autovalori. Lo svantaggio di questa rappresentazione risiede nella complessità spaziale: per elaborare una rete di N nodi è richiesto infatti lo storage di $O(N^2)$ elementi.
+
+\subsection{Reti Dirette}
+\vskip 20pt
+	\begin{figure}[htb]
+		\centering
+		\includegraphics[width=0.5\linewidth]{img/Directed.svg.png}
+		\caption{Un esempio di rete diretta e non pesata}\label{fig:1}
+	\end{figure}
+	\vskip 20pt
+I collegamenti all'interno di una rete possono essere diretti o non diretti. In base a questa distinzione possiamo definire il concetto di rete diretta e non diretta. Per fare un esempio, un collegamento sarà diretto quando la relazione che rappresenta è di tipo unilaterale, si pensi ad esempio ad una reazione metabolica. 
+
+\subsection{Reti Indirette}
+\vskip 20pt
+Quando i collegamenti sono invece di tipo bidirezionale, la rete prende il nome di rete indiretta. Per fare un esempio, un collegamento di due nodi di una rete elettrica sarà di tipo non diretto dato che la corrente può scorrere in entrambi i versi.
+	
+\section{Reti Temporali}
+\vskip 20pt
+	\begin{figure}[htb]
+		\centering
+		\includegraphics[width=0.8\linewidth]{img/temporalnet.png}
+		\caption{Un esempio di rete temporale (da definire meglio)}\label{fig:1}
+	\end{figure}
+	\vskip 20pt
+	
+	A livello concettuale una rete temporale non è molto diversa dalla sua controparte statica. Infatti alla rappresentazione matematica di grafo basta aggiungere un insieme T che denota intervalli temporali per esempio discreti:
+	
+	\begin{center}
+	    \large$G^T = (V, E^T)$ 
+	\end{center}
+	
+	Quindi si avrà una tupla consistente in un insieme di vertici V ed un insieme di archi $E^T \subseteq V \times V \times [0,T] $ con timestamp. La descrizione scelta per il tempo è quella di variabile discreta di timestamp $t \in [0,T]$. Per fare un esempio, scrivendo $(i,j;t)$ si intende che esiste un arco che al tempo $t$ collega i nodi $i$ e $j$.
+	
+\section{Principali Misure}
+	\subsection{Misure di centralità}
+    
+    \subsubsection{Degree Centrality}
+    
+    \begin{figure}[htb]
+    	\hfill\includegraphics[width=0.9\linewidth]{img/degreecentrality.PNG}\hfill
+    	\label{fig:Adj1}
+    	\caption{Concetto di grado di un nodo}
+    \end{figure}
+    
+    \FloatBarrier
+    
+    Questa prima misura ci fornisce una spiegazione intuitiva di centralità: più un nodo è popolare all'interno di una rete, più il suo grado $k$ è alto. È una misura semplice ma allo stesso tempo molto popolare. In formule:
+    
+    \begin{equation}
+    \large
+        C_D^{abs}(u) = d_u 
+    \end{equation}\vspace{0.8em}
+    
+    Si sta dunque affermando che la degree centrality assoluta di un nodo $u$ non è altro che il grado $d_u$ di quel nodo.\\ Possiamo anche dare un'interpretazione globale andando a calcolare qual è il nodo più popolare:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_D^{max}= max_{G_n} \ C_D^{abs}(u)
+    \end{equation}\vspace{0.8em}
+    
+    Dove $G_n$ è il nostro grafo ad $n$ nodi che abbiamo preso in considerazione. Notiamo che in generale la centralità massima possibile in una rete si ottiene quando si è di fronte ad una topologia ad hub (o stella), in quanto il nodo centrale è collegato con tutti gli altri $n-1$ nodi.\\
+    
+    Per completezza viene citata anche la \textbf{degree centrality relativa}:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_D^{rel} (u)= \frac{C_D^{abs}(u)}{C_D^{max}} = \frac{d_u}{N-1}
+    \end{equation}\vspace{0.8em}
+    
+    Per fare un esempio: 
+    
+    \begin{figure}[htb]
+    	\hfill\includegraphics[width=0.54\linewidth]{img/degreecentrality1.PNG}\hfill
+    	\label{fig:Adj1}
+    	\caption{Calcolo della degree centrality relativa}
+    \end{figure}
+    
+    \FloatBarrier
+    
+    
+    \subsubsection{Betweenness Centrality}
+    
+    Anche nel caso della betweenness centrality si è davanti ad una misura relativa. In questo caso particolare ci si riferisce  al numero di shortest path che attraversano uno specifico nodo $n$.
+    In altre parole, quando un nodo A dipende da un secondo nodo B per connettersi ad altri nodi della rete, diremo che B è particolarmente "importante''. In formule:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_B^{abs} (u)= \frac{1}{2} \sum_{v \neq w}  \frac{g_{vw}(u)}{g_{vw}}
+    \end{equation}
+    
+    Dove $g_{vw}(u)$ è il numero di shortest path tra una qualsiasi coppia di nodi $v,w$ diversi dal nodo $u$ che sto considerando.\\
+    Invece, $g_{vw}$ è il numero totale di shortest path che esistono tra due nodi random $v,w$. Ovviamente è sottinteso che $v \neq u$.\\
+    
+    Esiste poi una formula per il caso particolare della rete ad hub:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_B^{max} = \frac{1}{2} (N-1) (N-2) = \frac{1}{2} (n^2 - 3n + 2)
+    \end{equation}\vspace{0.5em}
+    
+    Per quanto riguarda la \textbf{betwenness centrality relativa} a un singolo nodo si ha:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_B^{rel} = \frac{\sum_{v \neq w}  \frac{g_{vw}(u)}{g_{vw}}}{\frac{1}{2} (n^2 - 3n + 2)}
+    \end{equation}\vspace{0.5em}
+
+    \subsubsection{Closeness Centrality}
+    
+    L'idea alla base di questa misura sostanzialmente è l'assunzione che un nodo più è centrale più è "close'' rispetto agli altri nodi o comunque alla maggioranza di essi. Di conseguenza abbiamo bisogno di una misura che dia valori elevati più le mie distanze con gli altri nodi sono piccole e viceversa. Definiamo allora la \textbf{closeness centrality} come l'inverso della somma di tutte le distanze tra il nodo di riferimento $u$ e tutti gli altri. Formalmente: 
+    
+    
+    \begin{equation}
+    \large
+        \displaystyle C_C^{abs}(u) = \frac{1} {\sum_{v \neq u } d(u,v)}
+    \end{equation}\vspace{0.5em}
+    
+    Come distanza si intende sempre il numero di edge da percorrere per arrivare da $u$ a $v$. Non è difficile immaginare che possiamo essere interessati anche ad avere una misura relativa, per cui consideriamo sempre il nodo centrale come nodo scelto:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_C^{rel}(u) = \frac{C_C^{abs}(u)}{C^{max}_C}
+    \end{equation}\vspace{0.5em}
+    
+    Ora, arriviamo al risultato passo passo: il vertice centrale è a distanza 1 da ogni altro cammino N - 1, ergo: 
+    
+    \begin{equation}
+    \large
+        \displaystyle C_C^{max} = \frac{1}{1+1+...+1} = \frac{1}{N - 1}
+    \end{equation}\vspace{0.5em}
+    
+    Ma in questo caso particolare le due misure , assoluta e massima coincidono per costruzione. Andiamo avanti:
+    
+    \begin{equation}
+    \large
+        \displaystyle C_C^{rel}(u) = \frac{\frac{1} {\sum_{v \neq u } d(u,v)}}{\frac{1}{N - 1}} = \frac{N - 1} {\sum_{v \neq u } d(u,v)}
+    \end{equation}\vspace{0.5em}
+    
+    Ma questa espressione non è altro che l'inverso della media della somma di tutte le distanze dal mio nodo: 
+    
+    
+    \begin{equation}
+    \large
+        \displaystyle C_C^{rel}(u) =  \frac{N - 1} {\sum_{v \neq u } d(u,v)} = (\frac{1}{N-1} \sum_{v \neq u } d(u,v))^{-1}
+    \end{equation}\vspace{0.5em}
+    
+   
+    
+    
+\subsection{Degree}
+    
+    \textbf{Degree} o grado di un nodo, è semplicemente il numero di vicini di quel nodo, ovvero il numero di link uscenti. Dal punto di vista di un \textbf{Singleton} possiamo definire anche \textbf{In-degree} ($K^{in}_i$) e \textbf{Out-degree} ($K^{out}_i$), rispettivamente il numero di archi entranti e uscenti.
+    
+\subsection{Average Degree}
+    
+    L'\textbf{Average Degree} o grado medio di un nodo, è il numero medio di archi per nodo in un determinato grafo. Lo definiamo come
+
+    \begin{equation}
+        <K> \ = \ \frac{\sum_{i \in N} K_i}{N}
+    \end{equation}
+    
+	Si noti anche un caso particolare sfruttabile nel caso dei grafi undirected. La densità è esprimibile nel modo seguente:
+
+    \begin{equation}
+        d \ = \ \frac{<K>}{N-1} = \frac{<K>}{K_{max}}
+    \end{equation}
+    
+\subsection{Path}
+
+    Un \textbf{cammino} o \textbf{path} non è altro che un insieme di nodi. Per fare un esempio in riferimento alla figura 3.1 si può affermare che un possibile path è l'insieme $\{4, 1, 3, 5\}$
+    La \textbf{lunghezza} di un path è banalmente il numero di elementi che compongono l'insieme. Per restare sull'esempio precedente, la lunghezza cercata sarà 4.\clearpage
+    
+\section{Processi Diffusivi}
+
+    Molto importante è l'analisi di processi diffusivi mediante l'utilizzo di strumenti della teoria delle reti. Prendiamo come esempio i fenomeni epidemiologici: il modello che useremo sarà una Contact Network, ovvero una rete dove i nodi rappresentano le persone e gli archi corrispondono alle interazioni umane tra i nodi. Da qui le strade a disposizione dell'analista sono diverse, e dipendono dai modelli probabilistici considerati nonchè dallo scopo finale del lavoro di ricerca. Bisogna però fare un distinguo sulla definizione di contagio, in quanto ce ne sono almeno due tipi:
+    
+\begin{itemize}
+    \item Il \textbf{social contagion} è l'influenza che gli altri manifestano su di noi ed è un processo che in qualche modo coinvolge personalmente un individuo. Diverse configurazioni strutturali della rete in termini di amicizie possono portare a condizionamenti diversi.
+    \item il \textbf{biological contagion} invece avviene in modo trasparente rispetto alla volontà dell'individuo. Ciò implica la perdita di osservabilità lungo tutte le fasi del processo. In altre parole è possibile creare un modello anche semplice di contagio, ma non potendone osservare in modo immediato il rapporto causa-effetto bisognerà per forza di cose ricorrere a modelli descrittivi non deterministici.
+\end{itemize}
+
+    Descriviamo ora alcuni modelli di base.
+    
+\subsection{Branching Process}
+\vskip 20pt
+	\begin{figure}[htb]
+		\centering
+		\includegraphics[scale=0.45]{img/Tree-representation-of-the-branching-process.png}
+		\caption{Rappresentazione grafica di un Branching Process}\label{fig:1}
+	\end{figure}
+	\vskip 20pt
+    Il Branching Process è il modello più semplice di contagio che assume come struttura sottostante una rete ad albero (infinito). Si possono fare le seguenti considerazioni:
+    
+    \begin{enumerate}
+        \item Il paziente zero è rappresentato dal nodo radice
+        \item Un nodo ad un livello $n$ è in contatto con altre $k$ persone. Il valore di $n$ può benissimo essere associato al numero ordinale che rappresenta l'ondata della malattia
+        \item Ogni nodo trasmette la malattia con una probabilità determinata da un tasso lineare $\beta$
+    \end{enumerate}
+    
+    La domanda che ci si pone in questa situazione è principalmente come predire se e come l'epidemia cesserà ad un certo punto. Per le caratteristiche strutturali della rete la risposta generale è che in sostanza la differenza è determinata dal tasso di propagazione dell'infezione $\beta$. Per valori piccoli assisteremo ad una morte veloce del fenomeno con la comparsa di poche ondate. Al contrario, per un valore del parametro elevato, si osserva una propagazione capillare lungo tutto l'albero.
+
+\subsection{Compartmental Models}
+
+I modelli compartimentali sono modelli matematici inventati per modellare la diffusione di epidemie all'interno di una popolazione ristretta di individui. Importantissimi in tal senso sono i lavori di Ross e Hudson \cite{RossAnAO1}\cite{RossAnAO2}\cite{RossAnAO3}, ma anche quelli di Kermack\cite{KermackACT} e Kendall\cite{Kendall1956DeterministicAS}.
+La popolazione è assegnata a compartimenti con etichette, ad esempio S, I o R, (Suscettibile, Infettivo o Guarito). I soggetti possono progredire tra i vari compartimenti seguendo un ben determinato pattern. L'ordine di transizione tra un compartimento e un altro modella dunque di flusso tra i compartimenti; per esempio scrivere SEIS significa che il flusso partirà dallo stato di suscettibile per poi proseguire con quelli di esposto, infettivo, quindi di nuovo suscettibile. Questi modelli sono di solito descritti mediante equazioni differenziali ordinarie (deterministiche), ma a volte possono anche essere utilizzati stocasticamente garantendo maggiore realistico che viene però pagato dalla crescita di complessità dell'intero sistema. Si analizzano più nel dettaglio tre di questi modelli.
+
+\subsubsection{Modello SI (Suscettibili - Infetti)}
+\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{img/SI.png}
+		\caption{Rappresentazione grafica del modello SI}\label{fig:1}
+	\end{figure}
+	
+	Il modello SI è il tentativo subito successivo al Branching Process per quanto riguarda la modellazione semplificata della diffusione di un'epidemia. Infatti, vi sono solo due stati, e la semplificazione consiste nel fatto che alla fine della simulazione, tutti i suscettibili saranno stai infettati.
+	Formalmente si ha la seguente descrizione:
+	
+	\begin{itemize}
+	    \item $S(t)$, ovvero il numero di persone suscettibili al tempo $t$
+	    \item $I(t)$, ovvero il numero di persone infette al tempo $t$
+	    \item Si impone che $\forall t$ vale $I(t) + S(t) = N \ cost$
+	\end{itemize}
+	Ne consegue che una variazione in uno dei due insiemi provoca una variazione uguale e contraria nell'altro.
+\subsubsection{Modello SIR (Suscettibili - Infetti - Guariti)}
+% compertmental models (SI, SIS, SIR , SEIR ,....)
+
+\vskip 20pt
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\linewidth]{img/SIR.png}
+		\caption{Rappresentazione grafica del modello SIR}\label{fig:1}
+	\end{figure}
+
+    Il modello SIR è il tentativo naturale di sviluppo del modello SI. La caratteristica principale è la compartimentizzazione del sistema in categorie che rappresentano rispettivamente i soggetti suscettibili ad infezione, gli infetti ed i guariti.
+    L'idea è che operando questa divisione è possibile considerare singolarmente le varie fasi del contagio semplificando la trattazione. Inoltre, supponendo equiprobabili i contagi indipendentemente dalle caratteristiche del soggetto infetto è possibile giustificare l'impiego di tassi di propagazione e di guarigione di tipo lineare (rispettivamente $\beta$ e $\gamma$). Matematicamente, l'evoluzione della malattia è generalmente formulata sotto forma di equazioni differenziali:
+    
+    \begin{subequations}
+    \label{eq1}
+    \large
+        \begin{align}
+            \frac{dS}{dt} & = -\beta \frac{S}{N} I \label{eq11} 
+            \\
+            \frac{dI}{dt} & = \beta \frac{S}{N} I - \gamma I \label{eq12}
+            \\
+            \frac{dR}{dt} & = \gamma I \label{eq13}
+        \end{align}
+    \end{subequations}
+
+    È importante notare come il valore atteso di contagiati per individuo, ovvero il famoso valore $R_0$ viene definito come il rapporto  $\frac{\beta}{\gamma}$.\clearpage
+    
+    \subsubsection{Modello SIS (Suscettibili - Infetti - Suscettibili)}
+    \begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{img/Sissys.png}
+		\caption{Rappresentazione grafica del modello SIS: in verde abbiamo la curva degli infetti ed in blu quella dei suscettibili}\label{fig:1}
+	\end{figure}
+	
+	Il modello SIS \cite{Pugliese} si differenzia dal suo alterego SIR in quanto il razionale prevede il suo impiego in tutti quei casi in cui la malattia considerata non appartenga alla categoria di quelle che non forniscono immunità, come ad esempio il raffreddore. Ciò implica che una volta uscito dalla fase infettiva, si ritorna in quella di suscettibile. Importante quindi è il ruolo ricoperto dai parametri $\alpha$ e $\beta$, rispettivamente il tasso lineare di guarigione e quello di infezione.
+	
+	In formule:
+	
+    \begin{subequations}
+    \label{eq2}
+    \large
+        \begin{align}
+            \frac{dS}{dt} & = -\beta IS + \alpha I \label{eq111} 
+            \\
+            \frac{dI}{dt} & = \beta IS - \alpha I \label{eq222}
+        \end{align}
+    \end{subequations}\clearpage
+    
+\section{Activity-Driven Networks}	
+	\vskip 20pt
+	\begin{figure}[htb]
+		\centering
+		\includegraphics[scale=0.3]{img/perrietal.png}
+		\caption{Rappresentazione grafica di una ADN costruita a partire dal dataset Physical Review Letters’’ (PRL) dell'American Physical Society}\label{fig:1}
+	\end{figure}
+	\vskip 20pt
+	
+	Importante passo in avanti nella modellazione dei comportamenti dei nodi all'interno di una rete è l'introduzione del modello ADN, ovvero Activity Driven Networks. Le ADN sono un promettente paradigma di modellazione che spiega in modo naturale l'eterogeneità dei nodi nella propensione a creare contatti con i loro vicini. Esse forniscono un mezzo semplice ed elegante per analizzare e spiegare la presenza di hub, che, nel caso temporale, sono nodi che hanno maggiori probabilità di generare contatti con il resto di la rete e generare così fenomeni di preferential attachment.
+	
+	\vskip 12pt
+	
+	Il primo lavoro che ha pubblicizzato questo paradigma è quello di Perra et Al.\cite{Perra} Il problema formalizzato ha diverse caratteristiche. Innanzitutto, importante è il concetto di \textbf{activity potential} $a_i$, ovvero un parametro definito come il numero di interazioni effettuate in una determinata finestra temporale da ogni nodo rapportata al totale delle interazioni effettuate nella stessa finestra da tutti gli altri nodi. Ciò porta alla definizione per ogni nodo di un proprio activity potential con conseguente individuazione di una distribuzione di probabilità $F(x)$ che descrive come un nodo $i$ scelto randomicamente abbia un activity potential $a_i$. Questa distribuzione di probabilità implicitamente definisce le dinamiche di interazione nel nostro sistema di riferimento.
+
+	
+	
+	
+	
+	Il modello base così formalizzato ha le seguenti caratteristiche:
+	
+	\begin{itemize}
+	    \item Consideriamo una rete con $N$ nodi ed assegnamo ad ogni nodo $i$ un coefficiente $a_i = \eta x_i$ definito come la probabilità per unità di tempo di creare nuovi contatti o interazioni con altri individui. Si introduce $\eta$ come fattore di scaling in modo che il numero medio di nodi attivi per unità di tempo rimanga costante al valore $\eta\langle x \rangle N$
+	    \item I valori di activity rate sono tali che $c < a_i < 1$ dove $c$ è una soglia di cut-off arbitraria per evitare possibili divergenze della distribuzione $F(x)$ intorno all'origine.
+	    \item Il processo generativo parte dalla rete $G$ composta esclusivamente da singleton
+	    \item Con probabilità $a_i \Delta t $ un singolo nodo $i$ si attiva e genera randomicamente $m$ nuove connessioni con altrettanti nodi.
+	    \item Nella finestra temporale successiva, ovvero al tempo $t + \Delta t$ si riparte da zero cancellando gli archi creati . Da questa definizione è chiaro che fissiamo il tempo di interazione costante al valore $\tau_i = \Delta t$
+	\end{itemize}
+	
+	È stato osservato che una distribuzione di probabilità di tipo power law con esponente compreso nell'intervallo $[2,3]$ offre buone performance di fitting per quanto riguarda fenomeni socio-economici.
+	
+	\clearpage
+	
+	\chapter{Analisi teorica del problema}
+	
+	In questo capito andremo a realizzare una panoramica teorica dello stato dell'arte per quanto riguarda l'individuazione di pattern all'interno delle dinamiche di mobilità umana di tipo face-to-face. 
+	
+	\section{Problemi fisici dei segnali wireless}
+    
+    \begin{figure}[htb]
+    	\hfill\includegraphics[width=0.7\linewidth]{img/Screenshot 2022-02-03 at 15-08-47 James Kurose, Keith Ross - Computer Networking-Pearson (2021) pdf.png}\hfill
+    	\label{fig:Adj1}
+    	\caption{Alcune caratteristiche di tecnologie senza fili}
+    \end{figure}
+    \FloatBarrier
+    
+    A livello fisico, si è pensato di utilizzare tecnologie come il Bluetooth o l'RFID per tracciare gli spostamenti dei vari agenti nello spazio. Tuttavia, in questa sezione è opportuno approfondire le problematiche fisiche e ingegneristiche proprie dei segnali wireless in modo da avere le conoscenze di base per effettuare considerazioni il più oggettive possibili. In questo caso è importante il lavoro già svolto dall'IEEE a livello di tecnologie wireless \cite{Kurose2017ComputerNA}. Il modello di riferimento è di una rete \textit{Multi-hop, infrastructure-less}. Bisogna infatti tenere conto delle seguenti caratteristiche dei segnali di questo tipo:
+    
+    \begin{itemize}
+        \item Diminuzione progressiva della potenza di segnale: le radiazioni elettromagnetiche infatti si attenuano all'aumentare della distanza dalla sorgente, tra l'altro non in modo lineare bensì proporzionale all'inverso del quadrato della distanza. Questo fenomeno prende il nome di \textbf{path loss}
+        \item Interferenze con altri agenti: più sorgenti radio che trasmettono alla stessa frequenza, per esempio 2.4 GHz, interferiranno tra di loro.
+        \item Multipath propagation: il fenomeno per cui il segnale viene riflesso in direzioni diverse in base agli angoli di incidenza con i vari ostacoli, dimodochè si vengano a creare percorsi multipli e di lunghezze diverse che connettono la sorgente col ricevitore. Questi sfasamenti di segnale spesso provocano malfunzionamenti.
+        \item Nuovo paradigma di analisi: nelle reti wireless tradizionali per la maggior parte del tempo i dispositivi sono in uno stato di moto nullo. Nel nostro caso, si vuole analizzare anche l'aspetto temporale di una rete e questo dipende da come interagiscono i vari soggetti nel tempo. Ciò implica che venga ammessa la libertà di movimento di tutte le componenti in gioco, dato che come vedremo non saranno utilizzate \textit{base station} in una logica peer-to-peer e quindi di decentralizzazione.
+    \end{itemize}
+    
+    Da tutto quanto sopra esposto si evince che effettivamente nelle reti senza fili c'è molta più propensione all'errore di trasmissione/ricezione rispetto alla controparte cablata. Per questo motivo esistono protocolli di comunicazione sofisticati che consentono il corretto scambio di informazioni utilizzando codifiche in grado di rilevare e correggere gli errori.
+    Spostandoci ora più dal punto di vista del ricevente, sappiamo che spesso il segnale in arrivo non è altro che un insieme eterogeneo di onde parzialmente degradate che provengono dalla sorgente e rumore ambientale. Per questo motivo è nato il bisogno di esprimere la qualità del segnale mediante un parametro, ovvero il rapporto segnale-rumore o \textbf{Signal-to-Noise ratio, SNR}. Ad esso si contrappone il \textbf{Bit error rate, BER}, ovvero la probabilità che un certo bit trasmesso venga ricevuto in maniera errata (bit flip). Tuttavia, non è scopo di questo lavoro effettuare una trattazione approfondita delle moderne tecniche di modulazione e codifica dei dati. Quello che però è importante ricordare è che all'aumentare del valore di SNR diminuisce il BER. Graficamente:
+    
+    \begin{figure}[htb]
+    	\hfill\includegraphics[width=0.5\linewidth]{img/Screenshot 2022-02-03 at 15-44-56 James Kurose, Keith Ross - Computer Networking-Pearson (2021) pdf.png}\hfill
+    	\label{fig:Adj1}
+    	\caption{Rapporto BER e SNR per diverse modulazioni}
+    \end{figure}
+    \FloatBarrier
+    
+    Per quanto riguarda più nello specifico il bluetooth (IEEE 802.15.1 e successive modificazioni) l'idea alla base rientra nell'ambito della creazione di reti \textit{ad-hoc}, sfruttando il paradigma \textbf{master-slave}. In particolare, questa tecnologia è comunemente sfruttata per la creazione di reti di raggio molto breve, di fatto andando a costituire un'alternativa ad un collegamento cablato. Si pensi a titolo esemplificativo alle periferiche di un computer come mouse, tastiere, cuffie ecc... Per questo motivo il raggio d'azione di questo tipo di tecnologia è adatto per la costruzione delle cosiddette \textbf{WPANs} (Wireless Personal Area Network) o \textbf{piconet}. Per semplicità, si faccia riferimento alla seguente immagine:
+    
+    \begin{figure}[h]
+    	\hfill\includegraphics[width=0.7\linewidth]{img/Screenshot 2022-02-03 at 16-04-11 James Kurose, Keith Ross - Computer Networking-Pearson (2021) pdf.png}\hfill
+    	\label{fig:Adj1}
+    	\caption{Esempio di piconet}
+    \end{figure}
+    \FloatBarrier
+    
+    Bisogna precisare però che nel presente lavoro non verranno costituite reti di questo tipo, ovvero basate su standard e protocolli comuni, ci si fermerà ai dati di rilevamento per fare inferenze successive.
+    
+    Nella prossima sezione, analizzeremo il problema delle dinamiche umane di tipo face-to-face, e getteremo le basi di quello che sarà il nostro lavoro.
+    %\subsection{Bluetooth 4.0 Low Energy}
+    %\subsection{Bluetooth 5.1}
+    %\subsection{RFID}
+	\clearpage
+	\section{Il problema nelle dinamiche umane face-to-face}
+	
+	
+	 \begin{figure}[h]
+    	\hfill\includegraphics[width=0.7\linewidth]{img/f2f.jpg}\hfill
+    	\label{fig:Adj1}
+    \end{figure}
+	
+	Con l'avvento dell' Internet of Things (IoT) è sempre più facile ottenere grandi quantità di dati in diversi settori, anche interdisciplinari.
+	Le reti, i dispositivi mobili e la possibilità di fare un vero e proprio \textit{data mining} a livello più fine ci permette di avere una lente in grado di portare alla luce un gran numero di piccole tracce digitali che tutti noi nel quotidiano lasciamo nell'ambiente circostante in modo inconsapevole. 
+	Negli ultimi anni a questo fenomeno è stato dato il nome di \textit{reality mining} \cite{Eagle2006Reality}. Tuttavia, nuove sfide sono emerse in questo campo, specialmente legate alla raffinatezza e alla precisione temporale di analisi richiesta per ottenere informazioni di rilievo.
+	Il problema è senza dubbio interessante. Il primo studio che mostrò una mancanza generalizzata di un background teorico fu quello di Baràbasi del 2008 \cite{mobility}. In quel caso l'idea fu di analizzare i modelli di traffico di un gran numero di persone effettuando il tracciamento dei loro dispositivi mobili per un tempo di sei mesi. I risultati furono sorprendenti: fino a quel momento Brockmann et al. \cite{article} avevano modellato le dinamiche di movimento come un processo markoviano denominato volo di Levy (Levy flight), ovvero un caso particolare di random walk, utile a dare indicazioni su fenomeni casuali o pseudo-casuali come terremoti, matematica finanziaria, ma anche astronomia e fenomeni fisici. Il nuovo paradigma che emergeva dall'evidenza sperimentale contraddiceva i risultati precedenti, mostrando come effettivamente nell'ambito delle interazioni umane una volta standardizzate le differenze tra le varie distanze di viaggio i modelli di viaggio individuali collassano in un'unica distribuzione di probabilità spaziale. In altre parole, si è visto che è possibile ridurre tutto il fenomeno complesso nell'analisi di pattern abbastanza regolari. Questa somiglianza intrinseca nei modelli di viaggio ha avuto un impatto su tutti quei fenomeni guidati dalla mobilità umana, dalla prevenzione delle epidemie alla risposta alle emergenze, alla pianificazione urbana e alla modellazione basata su agenti. Da qui in poi molti sono stati i lavori in tal senso. Anzi, possiamo dire che ad oggi, 2022, si hanno a disposizione diversi framework di analisi, dai più semplici ai più sofisticati. Se da una parte questo ha costituito indubbiamente un forte elemento di innovazione per tutto l'ultimo decennio, dall'altra ha portato alla situazione odierna dove si sono analizzate moltissime reti di ogni tipo e topologia. Uno dei filoni di approfondimento ancora alquanto fertile, è quello dell'analisi delle interazioni umane face-to-face negli spazi al chiuso e sulle piccole distanze, cioè dove avviene la stragrande maggioranza delle nostre vite quotidiane. Inoltre, l'esplosione della pandemia da SARS-CoV2\cite{doi:10.1056/NEJMoa2001017} ha acuito queste necessità nell'ambito di tutte le politiche di \textit{contact tracing}, termine coniato appunto per questa occasione. Come sempre, la tecnica comporta spesso l'onere, se così si vuole definire, del bilanciamento con quelli che sono tutti i diritti inviolabili riconosciuti nelle società liberali occidentali. Vale la pena citare i lavori di Dodds et al. \cite{doi:10.1126/science.1081058} e di Conover et al.\cite{inproceedings} , rispettivamente sull'analisi di reti sociali ricostruite a partire dalle email e su un algoritmo predittivo del colore politico degli utenti di Twitter.
+	
+	% sezione in cui esponiamo il problema di misurare ed analizzare le reti di interazione face-to-face
+	
+	% si sono analizzate tante reti su social media... o su infrastrutture...
+	
+	% chi prima di noi ha provato a fare face-to-face 
+	 % come hanno fatto
+	 % pro
+	 % contro
+	 
+	% HTH
+	% vogliamo farlo lwo cost e più preciso
+	% partire da bluetooth precisione (paper)
+	    % problemi di natura fisica
+	% low cost con i telefonini 
+	
+    
+	% sul nostro approccio agli header bluetooth per pacchetti
+	    
+	% android 
+	    % UX, sistema
+	    % differenti chip ci aspettiamo differenti segnali...
+	% iphone
+	    % ux interface
+	    % tutti chip uguali
+	    
+	% server
+	    % sistema per la privacy e GDPR
+	    
+	% esperimenti
+	    % quello di casa tua POC
+	    % con quelle analisi già fatte 
+	        % frequenze, intesità, ecc ecc
+	        
+	   % quelli che faremo presto
+	    % analisi....
+	   
+	 % testare un modello epidemiologi sul nostro netwrok dei dati
+	    % analisi proprietà (soglia epidemica, tempoc aratteristico...)
+	    % differenza da altri modelli teorici - sociopatterns?
+    
+    % abbiamo ottenuto ciò che volevamo?
+    % cosa è apparso di nuovo?
+    % quali problemi?
+    % potenzialità future...
+    
+    
+    % APPENDICI
+        % A grafici creati ma no usati
+        % B codice usato 
+        % C altro?
+        
+    % bibliografia
+    
+    
+    \section{I lavori di Sociopatterns}
+    
+    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.7\linewidth]{img/header_logo.png}
+	    \caption{Logo dell'organizzazione Sociopatterns}
+	    \label{fig:my_label}
+	\end{figure}
+    
+    SocioPatterns è una collaborazione di ricerca interdisciplinare che adotta una metodologia data-driven con l'obiettivo di studiare ed approfondire i modelli fondamentali nelle dinamiche sociali e nell'attività umana coordinata.
+
+    Per raggiungere i suoi obiettivi scientifici, l'organizzazione contribuisce anche allo sviluppo di nuove tecnologie per la raccolta di dati rilevanti. In particolare, la comunità supporta lo sviluppo di una piattaforma denominata  \textit{SocioPatterns sensing platform}, che utilizza sensori indossabili wireless per raccogliere dati longitudinali sulla mobilità umana e la vicinanza di tipo face-to-face negli ambienti del mondo reale. Il team di SocioPatterns lavora anche allo sviluppo di strumenti e tecniche per rappresentare, analizzare e visualizzare i dati raccolti. 
+    \subsection{Analisi tecnica}
+    Al fine di ottenere un'accurata panoramica sullo stato dell'arte si sono analizzati alcuni dei lavori scientifici pubblicati da SocioPatterns, in particolare quelli riguardanti il nostro ambito d'interesse. In questa sezione ci si soffermerà su quegli studi che descrivono le interazioni umane face-to-face in ambienti chiusi, come possono essere quelli relativi alle conferenze \cite{sdc_iswc10} ma anche quelli relativi all'esplorazione di nuove metodologie di raccolta dati, ad esempio mediante dispositivi RFID.
+    
+    In \cite{2008arXiv0811.4170B}, si è scelto infatti di dotare i vari individui di un beacon RFID di design concorde con le specifiche \href{https://www.openbeacon.org/}{OpenBeacon} che periodicamente inviasse dei pacchetti nell'etere. Questi pacchetti venivano intercettati da alcune stazioni poste in luoghi ben precisi dell'ambiente di test ed una volta collezionati i dati, essi venivano inviati ad un server centrale per le elaborazioni successive. Gli stessi ricercatori sottolineano tuttavia che anche nel caso dell'RFID, si è soggetti a quei problemi di natura fisica per le tecnologie senza fili già esposte in precedenza. La loro soluzione è stata quella di utilizzare la piattaforma di OpenBeacon per non dover più fare inferenza sui contatti (\textit{contact inference}), bensì sfruttando la bidirezionalità di comunicazione per verificare i contatti avvenuti direttamente in una logica \textit{clinet-side}. Inoltre, utilizzando dei livelli di potenza molto bassi, si riusciva ad avere una buona risoluzione spaziale di meno di 1-2 metri, dato che solo gli individui molto vicini tra loro erano in grado di rilevarsi reciprocamente.\\
+    Una volta fatto questo, si è costruito un sistema di visualizzazione che consentisse di osservare sia la rete in forma aggregata finale, sia in forma cumulativa su intervalli di 20 secondi. Per completezza, si riporta la figura del paper:
+    
+    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.8\linewidth]{img/Screenshot 2022-02-04 at 08-53-45 0811 4170v2 pdf.png}
+	    \caption{Snapshot della rete composta da beacon RFID}
+	    \label{fig:my_label}
+	\end{figure}
+	\FloatBarrier
+    
+    Successivamente, è stata graficata la distribuzione dei contatti di questa rete siffatta:
+    
+    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=\linewidth]{img/Screenshot 2022-02-04 at 09-25-52 0811 4170v2 pdf.png}
+	    \caption{Distribuzione di probabilità dei contatti}
+	    \label{fig:my_label}
+	\end{figure}
+	
+	\FloatBarrier
+	
+	Com'è possibile vedere dai grafici, siamo in presenza di curve assimilabili ad una Power Law. I ricercatori specificano che l'esponente è $\alpha = -2.5$.
+	
+	Da notare che in questo lavoro non ci si è concentrati sul concetto di stima della distanza tra due nodi. Questo perchè l'hardware a disposizione era omogeneo su tutti i badge e si è quindi lavorato sulla potenza del segnale, riducendola al minimo per catturare solo i movimenti a corto raggio.
+	
+	In \cite{10.1371/journal.pone.0011596}, la metodologia è stata analoga, ma si è estesa la proof-of-concept a tre scenari reali, ovvero ambienti di conferenza : 
+	
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.7\linewidth]{img/Screenshot 2022-02-04 at 12-27-16 pone 0011596 1 9 - file.png}
+	    \centering
+	    \caption{A: schema sintentico di funzionamento. B,C e D: i grafici indicano la variazione di persone nel tempo rilevata dai sistemi RFID}
+	    \label{fig:my_label}
+	\end{figure}
+    
+    \subsubsection{Commento}
+    
+    Questi lavori che sfruttano la tecnologia RFID consentono per la prima volta di osservare dei fenomeni che solitamente avvengono in una scala non rilevabile dagli strumenti e dai framework del passato. Tuttavia, il costo di una soluzione di questo tipo non è trascurabile, in quanto bisogna acquistare hardware ad-hoc per ogni partecipante, senza contare il posizionamento delle base station finali per la raccolta e lo stoccaggio dei dati. Quindi il dispendio economico non scala con l'aumentare dei partecipanti.
+    
+	\section{Il progetto HumanToHuman}
+	
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.35\linewidth]{img/unnamed.png}
+	    \centering
+	    \caption{Logo del progetto HumanToHuman}
+	    \label{fig:my_label}
+	\end{figure}
+	
+	Il progetto HumantoHuman è nato come lavoro del laboratorio di sistemi complessi del Politecnico di Torino per studiare le dinamiche di interazione nei contesti reali tra le persone. Esso si basa su un punto cardine: oggigiorno praticamente il 99\% delle persone possiede uno smartphone. Il progetto si pone quindi l'obiettivo di studiare le interazioni umane a corto raggio mediante l'impiego della tecnologia bluetooth. 
+	
+	
+	\subsection{Funzionamento del sistema}
+	
+	\begin{figure}[h]
+	    \centering
+	    \includegraphics[width=1\linewidth]{img/SchemaH2H.png}
+	    \centering
+	    \caption{Schema logico di funzionamento}
+	    \label{fig:my_label}
+	\end{figure}
+	
+	Il sistema human-to-human nel suo complesso consente di ricavare i dati di interazione face-to-face tra le persone. Come si può vedere in figura 4.9 sono 5 le componenti fondamentali di cui esso si compone:
+	
+	\begin{enumerate}
+	    \item La prima componente (umana) è costituita dal team di ricercatori. Essi possono interfacciarsi con il sistema Human-to-Human mediante la creazione e il collezionamento dati di esperimenti. Una volta scaricati i dati di interazione, sono liberi di analizzarli ed elaborarli nel modo più consono all'obiettivo dello studio in questione.
+	    \item La seconda componente consiste nel sito web che consente l'interazione tra i ricercatori ed il backend.Il pannello di controllo dal quale è possibile svolgere questa operazione è il seguente:
+	    \begin{figure}[h]
+	    \centering
+	    \includegraphics[width=0.9\linewidth]{img/h2h1.png}
+	    \centering
+	    \caption{Dashboard ricercatori Human To Human}
+	    \label{fig:my_label}
+	\end{figure}
+	Si può notare come le funzioni disponibili siano quelle di creazione, cancellazione e scaricamento dati relativi ad un esperimento. Di fondamentale importanza la voce relativa al \textit{consent form}, ovvero la parte di privacy policy che deve essere mostrata sui dispositivi dei partecipanti all'esperimento e conseguentemente accettata. Un esempio di privacy policy è disponibile all'indirizzo: \texttt{\url{https://doc-dev.github.io/}} 
+	\item La terza componente consiste nel backend programmato in Go, che si interfaccia con un database costruito utilizzando PostgreSQL. Il codice sorgente è disponibile sul profilo github di Albert Liu, Senior alla NYU : \texttt{\url{https://github.com/Dynamical-Systems-Laboratory/humanToHuman}}
+	\item la quarta componente consiste in tutta quella serie di API esposte che possono essere usate dai client e dai ricercatori. Vediamo ora un elenco esaustivo:
+	\begin{itemize}
+    \item \textbf{Clear}, consente di cancellare l'intero contenuto del database
+    \item \textbf{Login}, consente di autenticare l'utente conducendolo nella dashboard per i ricercatori
+    \item \textbf{AddExperiment}, aggiunge un nuovo esperimento nel database
+    \item \textbf{DeleteExperiment}, rimuove un esperimento esistente dal database
+    \item \textbf{ExperimentExists}, verifica che uno specifico esperimento esista nel database
+    \item \textbf{GetDevicesCSV}, consente di scaricare un file con estensione \texttt{.csv} nel quale viene scritta la lista dei dispositivi che partecipano a quel determinato esperimento
+    \item \textbf{GetCSV}, consente di scaricare un file con estensione \texttt{.csv} contenenti tutti i record relativi ad un singolo sampling. Questo aspetto sarà approfondito in seguito
+    \item \textbf{GetPrivacyPolicy}, consente di ottenere la privacy policy per l'esperimento specifico
+    \item \textbf{GetDescription}, consente di ottenere la descrizione testuale che è stata assegnata ad un esperimento
+    \item \textbf{AddUser}, aggiunge un utente a un particolare esperimento
+    \item \textbf{RemoveUser}, rimuove un utente da un particolare esperimento
+    \item \textbf{AddConnection}, aggiunge un record ad un esperimento
+    \item \textbf{AddConnectionUnsafe}, aggiunge un record ad un esperimento senza verificare a priori che il mittente sia effettivamente un partecipante a quell'esperimento
+\end{itemize}
+Qui di seguito una tabella riepilogativa:
+\FloatBarrier
+    \begin{table}[h]
+    \centering
+    \label{tab:my-table}
+    \begin{tabular}{|c|l|c|}
+    \hline
+    Nome API            & \multicolumn{1}{c|}{Path}                   & Method \\ \hline
+    Clear               & /clear                                      & POST    \\ \hline
+    Login               & /login                                      & POST    \\ \hline
+    AddExperiment       & /addExperiment                              & POST    \\ \hline
+    DeleteExperiment    & /deleteExperiment                           & POST    \\ \hline
+    ExperimentExists    & /experiment/:experiment/exists              & GET     \\ \hline
+    GetDevicesCSV       & /experiment/:experiment/devices.csv         & GET     \\ \hline
+    GetCSV              & /experiment/:experiment/connections.csv     & GET     \\ \hline
+    GetPrivacyPolicy    & /experiment/:experiment/policy              & GET     \\ \hline
+    GetDescription      & /experiment/:experiment/description         & GET     \\ \hline
+    AddUser             & /experiment/:experiment/addUser             & POST    \\ \hline
+    RemoveUser          & /experiment/:experiment/removeUser          & POST    \\ \hline
+    AddConnection       & /experiment/:experiment/addConnection       & POST    \\ \hline
+    AddConnectionUnsafe & /experiment/:experiment/addConnectionUnsafe & POST    \\ \hline
+    \end{tabular}
+\end{table}
+	\FloatBarrier
+
+
+	\item La quinta ed ultima parte è quella costituita dal gruppo di attori che partecipano ad un determinato esperimento mediante i loro dispositivi personali.
+	
+	
+	\end{enumerate}
+	
+	
+	Per quanto riguarda il lato client-side, è stata sviluppata un'applicazione per iOS e Android che consente di catturare le informazioni relative ad un'interazione face-to-face e di inviarle ad un server centrale. Da qui in poi è possibile gestirle in forma aggregata. Un'analisi successiva viene poi realizzata sui valori raccolti in modo da capire se e quando è avvenuta un'interazione a corto raggio.
+	
+	
+	
+	\subsection{L'approccio agli header bluetooth}
+	
+	Una funzione chiave dell'applicazione Human-to-Human è quella che consente l'advertising di pacchetti bluetooth nei quali vengono inclusi gli identificativi dei partecipanti a un esperimento. Tuttavia è necessario precisare che nell'ambito dello sviluppo dell'applicazione si è dovuto prestare molta attenzione nella risoluzione di un problema di sistema operativo. In particolare, il caso di studio era iOS. Gli sviluppatori Apple da sempre hanno trovato difficoltà nell'implementare le funzionalità di connettività bluetooth quando il device è in stato di sospensione o un'app transita in background. In altre parole, per limiti di sistema, alle applicazioni iOS non è consentito utilizzare la modalità di advertising quando esse si trovano in uno stato di background, ovvero non sono in primo piano, con lo schermo accesso. Ciò costituisce un grave intoppo per quanto riguarda l'interazione con l'utente, che quindi ne risulta fortemente limitata. 
+	Infatti, quando un'app iOS è in primo piano (\textit{foreground}), può emettere un advertisement iBeacon e può emettere un UUID\footnote{Lo UUID, acronimo di Universally unique identifier è un identificativo usato nelle infrastrutture software, standardizzato dalla Open Software Foundation (OSF)  } per il servizio GATT\footnote{GATT, acronimo di Generic ATTribute, definisce il modo in cui due dispositivi bluetooth low energy trasferiscono dati bidirezionalmente utilizzando due concetti che sono quello di Services e quello di Characteristics}. In background invece, non può fare nulla di tutto questo. Tuttavia un'app che si trova in uno stato di background può comunque ospitare un servizio bluetooth personalizzato. Il punto è che se si ha la possibilità di creare un servizio siffatto, è ragionevole pensare che ci siano date le primitive per poterlo annunciare via etere, quindi proprio l'advertising di cui si necessita. In qualche modo Apple doveva risolvere questo problema. Questo ``in qualche modo'' assume una forma concreta nell'utilizzo della cosiddetta \textit{Area di Overflow}, o Overflow Area.
+	
+	
+	
+	\subsection{Razionale}
+	Obiettivo di questo lavoro è partire dall'infrastruttura tecnica già costruita da un precedente tesista del Politecnico di Torino sviluppando in particolare la fase di post-processing dei dati, in modo da generare delle reti temporali analizzabili. Da qui in poi diverse opzioni sono possibili: posto che la costituzione di reti temporali di per sè costituisce un importante passo avanti in quanto building block fondamentale per qualunque tipo di analisi, l'idea è quella di impostare un modello epidemiologico molto semplice per acquisire maggior consapevolezza dei processi diffusivi in reti che tengono conto della dimensione spazio-temporale. Dal punto di vista pratico, vi è sicuramente l'esigenza di mantenere i vari costi i più bassi possibili ma al tempo stesso ottenere una buona risoluzione e di conseguenza dei buoni dati su cui lavorare. Per questo motivo la scelta è stata quella di creare un'applicazione mobile, sfruttando il fatto che ad oggi la quasi totalità delle persone possiede uno smartphone.
+	
+	\subsection{Frame Bluetooth}
+	
+	\subsection{L'applicazione Android}
+	\subsubsection{Chip hardware eterogenei}
+	
+	\subsection{Il server}
+	
+	\section{Il problema}
+	
+	\section{Analisi della letteratura ed esplorazione dello stato dell'arte}
+	
+	In questa sezione verranno analizzate qualitativamente le varie soluzioni presenti in letteratura del problema esposto precedentemente.
+
+\chapter{Analisi sperimentale}
+
+
+\printbibliography[
+heading=bibintoc,
+title={Bibliografia}
+]
+	
+	
+	
+	
+\end{document}		
